@@ -80,7 +80,6 @@ def play_human(env):
     # Maze layout is inside maze_view
     maze = env.env.maze_view.maze.maze_cells
 
-
     # Start at robot position
     r, c = env.env.maze_view.robot
     running = True
@@ -89,18 +88,17 @@ def play_human(env):
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
-                old_r, old_c = r, c
-                if event.key == pygame.K_UP:    r, c = max(0, r-1), c
-                elif event.key == pygame.K_DOWN: r, c = min(rows-1, r+1), c
-                elif event.key == pygame.K_LEFT: c = max(0, c-1)
-                elif event.key == pygame.K_RIGHT: c = min(cols-1, c+1)
+                if event.key == pygame.K_UP:
+                    env.env.maze_view.move_robot("N")
+                elif event.key == pygame.K_DOWN:
+                    env.env.maze_view.move_robot("S")
+                elif event.key == pygame.K_LEFT:
+                    env.env.maze_view.move_robot("W")
+                elif event.key == pygame.K_RIGHT:
+                    env.env.maze_view.move_robot("E")
 
-                # If wall, revert
-                if maze[r][c] == 1:
-                    r, c = old_r, old_c
-
-                # Move robot in MazeEnv too
-                env.env.maze_view.robot = np.array([r, c])
+                # Update local position after move
+                r, c = env.env.maze_view.robot
 
         # Draw
         screen.fill((255,255,255))
@@ -114,7 +112,9 @@ def play_human(env):
         pygame.draw.rect(screen, (0,255,0), (goal_c*cell_size, goal_r*cell_size, cell_size, cell_size))
 
         # Draw player
-        pygame.draw.circle(screen, (255,0,0), (c*cell_size+cell_size//2, r*cell_size+cell_size//2), cell_size//3)
+        pygame.draw.circle(screen, (255,0,0),
+                           (c*cell_size+cell_size//2, r*cell_size+cell_size//2),
+                           cell_size//3)
 
         pygame.display.flip()
         clock.tick(10)
