@@ -90,22 +90,22 @@ def play_human(env):
                 running = False
             elif event.type == pygame.KEYDOWN:
                 action = None
-                if event.key == pygame.K_UP:
-                    action = 0   # up
-                elif event.key == pygame.K_DOWN:
-                    action = 1   # down
-                elif event.key == pygame.K_LEFT:
-                    action = 2   # left
-                elif event.key == pygame.K_RIGHT:
-                    action = 3   # right
+                if event.key == pygame.K_UP:    action = 0
+                elif event.key == pygame.K_RIGHT: action = 1
+                elif event.key == pygame.K_DOWN:  action = 2
+                elif event.key == pygame.K_LEFT:  action = 3
 
                 if action is not None:
-                    # Take a step in the environment
-                    state, reward, done, _, _ = env.step(action)
-                    r, c = env.env.maze_view.robot
-                    if done:
-                        print("🎉 Goal reached!")
-                        running = False
+                    step_result = env.step(action)
+                    if len(step_result) == 5:
+                        state, reward, terminated, truncated, info = step_result
+                        done = terminated or truncated
+                        else:
+                            state, reward, done, info = step_result
+
+                        if done:
+                             print("🎉 Goal reached!")
+                             running = False
 
         # Draw maze
         screen.fill((255,255,255))
