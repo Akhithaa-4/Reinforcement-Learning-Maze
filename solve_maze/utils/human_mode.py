@@ -19,30 +19,37 @@ def play_human(env):
     screen = pygame.display.set_mode((width, height))
     clock = pygame.time.Clock()
 
-    # Maze layout is inside maze_view
     maze = env.env.maze_view.maze.maze_cells
 
-    # Start at robot position
+    # Start state
+    state = env.reset()
     r, c = env.env.maze_view.robot
+
     running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
+                action = None
                 if event.key == pygame.K_UP:
-                    env.env.maze_view.move_robot("N")
+                    action = 0   # up
                 elif event.key == pygame.K_DOWN:
-                    env.env.maze_view.move_robot("S")
+                    action = 1   # down
                 elif event.key == pygame.K_LEFT:
-                    env.env.maze_view.move_robot("W")
+                    action = 2   # left
                 elif event.key == pygame.K_RIGHT:
-                    env.env.maze_view.move_robot("E")
+                    action = 3   # right
 
-                # Update local position after move
-                r, c = env.env.maze_view.robot
+                if action is not None:
+                    # Take a step in the environment
+                    state, reward, done, _, _ = env.step(action)
+                    r, c = env.env.maze_view.robot
+                    if done:
+                        print("🎉 Goal reached!")
+                        running = False
 
-        # Draw
+        # Draw maze
         screen.fill((255,255,255))
         for i in range(rows):
             for j in range(cols):
@@ -54,14 +61,13 @@ def play_human(env):
         pygame.draw.rect(screen, (0,255,0), (goal_c*cell_size, goal_r*cell_size, cell_size, cell_size))
 
         # Draw player
-        pygame.draw.circle(screen, (255,0,0),
-                           (c*cell_size+cell_size//2, r*cell_size+cell_size//2),
-                           cell_size//3)
+        pygame.draw.circle(screen, (255,0,0), (c*cell_size+cell_size//2, r*cell_size+cell_size//2), cell_size//3)
 
         pygame.display.flip()
         clock.tick(10)
 
     pygame.quit()
+
 
 
     sys.exit()
