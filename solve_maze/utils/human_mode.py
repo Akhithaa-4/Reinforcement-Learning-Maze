@@ -19,12 +19,11 @@ def play_human(env):
     screen = pygame.display.set_mode((width, height))
     clock = pygame.time.Clock()
 
+    # Maze layout
     maze = env.env.maze_view.maze.maze_cells
 
-    # Start state
-    state = env.reset()
+    # Start at robot position
     r, c = env.env.maze_view.robot
-
     running = True
     while running:
         for event in pygame.event.get():
@@ -32,41 +31,58 @@ def play_human(env):
                 running = False
             elif event.type == pygame.KEYDOWN:
                 action = None
+                old_r, old_c = r, c
                 if event.key == pygame.K_UP:
-                    action = 0   # up
+                    action = 0
+                    r, c = max(0, r-1), c
                 elif event.key == pygame.K_DOWN:
-                    action = 1   # down
+                    action = 1
+                    r, c = min(rows-1, r+1), c
                 elif event.key == pygame.K_LEFT:
-                    action = 2   # left
+                    action = 2
+                    c = max(0, c-1)
                 elif event.key == pygame.K_RIGHT:
-                    action = 3   # right
+                    action = 3
+                    c = min(cols-1, c+1)
 
-                if action is not None:
-                    # Take a step in the environment
-                    state, reward, done, _, _ = env.step(action)
-                    r, c = env.env.maze_view.robot
+                # If wall, revert
+                if maze[r][c] == 1:
+                    r, c = old_r, old_c
+                else:
+                    # Take a step in the environment (Gymnasium returns 5 values, Gym returns 4)
+                    step_result = env.step(action)
+                    if len(step_result) == 5:
+                        state, reward, done, _, _ = step_result
+                    else:
+                        state, reward, done, _ = step_result
+
                     if done:
                         print("🎉 Goal reached!")
                         running = False
 
-        # Draw maze
-        screen.fill((255,255,255))
+        # Draw
+        screen.fill((255, 255, 255))
         for i in range(rows):
             for j in range(cols):
-                color = (0,0,0) if maze[i][j] == 1 else (200,200,200)
-                pygame.draw.rect(screen, color, (j*cell_size, i*cell_size, cell_size, cell_size))
+                color = (0, 0, 0) if maze[i][j] == 1 else (200, 200, 200)
+                pygame.draw.rect(screen, color,
+                                 (j * cell_size, i * cell_size, cell_size, cell_size))
 
         # Draw goal
         goal_r, goal_c = env.env.maze_view.goal
-        pygame.draw.rect(screen, (0,255,0), (goal_c*cell_size, goal_r*cell_size, cell_size, cell_size))
+        pygame.draw.rect(screen, (0, 255, 0),
+                         (goal_c * cell_size, goal_r * cell_size, cell_size, cell_size))
 
         # Draw player
-        pygame.draw.circle(screen, (255,0,0), (c*cell_size+cell_size//2, r*cell_size+cell_size//2), cell_size//3)
+        pygame.draw.circle(screen, (255, 0, 0),
+                           (c * cell_size + cell_size // 2, r * cell_size + cell_size // 2),
+                           cell_size // 3)
 
         pygame.display.flip()
         clock.tick(10)
 
     pygame.quit()
+
 
 
 
