@@ -1,11 +1,19 @@
 import pygame
 import sys
 
+# Map key presses to actions
+KEY_TO_ACTION = {
+    pygame.K_UP: 0,    # up
+    pygame.K_RIGHT: 1, # right
+    pygame.K_DOWN: 2,  # down
+    pygame.K_LEFT: 3   # left
+}
+
 def play_human(env):
     pygame.init()
 
-    # 👇 Force the first render so the window appears
-    env.render()
+    # 👇 Reset environment so maze + robot start properly
+    env.reset()
 
     running = True
     while running:
@@ -36,7 +44,7 @@ def play_human(env):
                         print("🎉 Goal reached!")
                         running = False
 
-        # 👇 Keep rendering after every loop
+        # 👇 Render environment each frame
         env.render()
 
     pygame.quit()
