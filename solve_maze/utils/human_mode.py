@@ -10,12 +10,15 @@ KEY_TO_ACTION = {
 }
 
 def play_human(env):
+    import pygame
     pygame.init()
 
-    # 👇 Reset environment so maze + robot start properly
+    # reset the environment so maze window is drawn
     env.reset()
 
+    r, c = env.env.maze_view.robot
     running = True
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -46,6 +49,9 @@ def play_human(env):
 
         # 👇 Render environment each frame
         env.render()
+        pygame.display.update()
+        pygame.time.wait(50)   # 50 ms delay
+
 
     pygame.quit()
     sys.exit()
