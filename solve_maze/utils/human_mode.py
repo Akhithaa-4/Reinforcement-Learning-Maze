@@ -1,51 +1,47 @@
 import pygame
-import sys
+import numpy as np
+
+# Map arrow keys to actions (assuming 0:UP, 1:RIGHT, 2:DOWN, 3:LEFT)
+KEY_TO_ACTION = {
+    pygame.K_UP: 0,
+    pygame.K_RIGHT: 1,
+    pygame.K_DOWN: 2,
+    pygame.K_LEFT: 3,
+}
 
 def play_human(env):
     pygame.init()
-   
-    pygame.display.set_mode((600, 600))
-    pygame.display.set_caption("Maze Human Mode")
-    print("✅ Human mode started... (using env.render like QLearning/SARSA)")
+    env.reset()
+    env.render()
 
-    state = env.reset()
     running = True
+    done = False
+    total_reward = 0
 
-    while running:
+    print("🎮 Use arrow keys to play the maze. Press ESC to quit.")
+
+    while running and not done:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            elif event.type == pygame.KEYDOWN:
-                action = None
-                if event.key == pygame.K_UP:
-                    action = 0
-                elif event.key == pygame.K_DOWN:
-                    action = 1
-                elif event.key == pygame.K_LEFT:
-                    action = 2
-                elif event.key == pygame.K_RIGHT:
-                    action = 3
-                elif event.key == pygame.K_q:   # quit
+                break
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
                     running = False
+                    break
 
-                if action is not None:
-                    step_result = env.step(action)
-                    if len(step_result) == 5:
-                        next_state, reward, done, _, _ = step_result
-                    else:
-                        next_state, reward, done, _ = step_result
+                if event.key in KEY_TO_ACTION:
+                    action = KEY_TO_ACTION[event.key]
+                    next_state, reward, done, _ = env.step(action)
+                    env.render()
+                    total_reward += reward
 
-                    state = next_state
+                    print(f"➡️ Action: {action}, Reward: {reward}, Done: {done}")
+
                     if done:
-                        print("🎉 Goal reached!")
+                        print(f"✅ Episode finished! Total reward: {total_reward}")
                         running = False
-
-        # 🔹 rely on env's own rendering system
-        env.render()
+                        break
 
     pygame.quit()
-    sys.exit()
-
-
-
-    
