@@ -1,13 +1,13 @@
+import pygame
+import sys
+
 def play_human(env):
-    import pygame
     pygame.init()
 
-    r, c = env.env.maze_view.robot
-    running = True
-
-    # 👇 force maze to appear at start
+    # 👇 Force the first render so the window appears
     env.render()
 
+    running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -36,6 +36,7 @@ def play_human(env):
                         print("🎉 Goal reached!")
                         running = False
 
+        # 👇 Keep rendering after every loop
         env.render()
 
     pygame.quit()
