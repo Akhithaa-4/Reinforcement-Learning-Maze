@@ -33,7 +33,8 @@ class MazeView2D:
         self.maze_size = self.__maze.maze_size
         if self.__enable_render is True:
             # to show the right and bottom border
-            self.screen = pygame.display.set_mode(screen_size, pygame.NOFRAME | pygame.HIDDEN)
+            self.screen = pygame.display.set_mode(screen_size)  # visible window
+
             self.__screen_size = tuple(map(sum, zip(screen_size, (-1, -1))))
 
         # Set the starting point
