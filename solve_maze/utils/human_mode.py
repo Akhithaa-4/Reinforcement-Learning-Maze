@@ -11,16 +11,17 @@ KEY_TO_ACTION = {
 
 def play_human(env):
     pygame.init()
-    env.reset()
-    env.render()
-
-    running = True
+    state = env.reset()
     done = False
     total_reward = 0
+    running = True
 
     print("🎮 Use arrow keys to play the maze. Press ESC to quit.")
 
     while running and not done:
+        # render EVERY FRAME (like QLearning/SARSA)
+        env.render()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -34,8 +35,8 @@ def play_human(env):
                 if event.key in KEY_TO_ACTION:
                     action = KEY_TO_ACTION[event.key]
                     next_state, reward, done, _ = env.step(action)
-                    env.render()
                     total_reward += reward
+                    state = next_state.copy()
 
                     print(f"➡️ Action: {action}, Reward: {reward}, Done: {done}")
 
