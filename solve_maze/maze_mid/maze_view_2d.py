@@ -567,9 +567,16 @@ class Portal:
 
 
 if __name__ == "__main__":
+    maze = MazeView2D(screen_size=(500, 500), maze_size=(10, 10))
+    
+    running = True
+    while running:
+        maze.update()  # keep redrawing
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-    maze = MazeView2D(screen_size= (500, 500), maze_size=(10,10))
-    maze.update()
-    input("Enter any key to quit.")
+    pygame.quit()
+
 
 
