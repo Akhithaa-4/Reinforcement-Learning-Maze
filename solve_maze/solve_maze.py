@@ -78,7 +78,9 @@ def play_human(env):
     clock = pygame.time.Clock()
 
     # Maze layout
-    maze = env.env.maze_view.maze.maze_cells
+        # Maze layout (from MazeEnvCast, like AI mode)
+    maze = env.env.maze.maze_cells
+
 
     # Start at robot position
     r, c = env.env.maze_view.robot
@@ -122,9 +124,14 @@ def play_human(env):
         screen.fill((255, 255, 255))
         for i in range(rows):
             for j in range(cols):
-                color = (0, 0, 0) if maze[i][j] == 1 else (200, 200, 200)
+                if maze[i][j] == 1:   # wall
+                    color = (0, 0, 0)
+                else:                 # free
+                    color = (255, 255, 255)
                 pygame.draw.rect(screen, color,
-                                 (j * cell_size, i * cell_size, cell_size, cell_size))
+                                 (j * cell_size, i * cell_size, cell_size, cell_size), 0)
+                pygame.draw.rect(screen, (200,200,200),
+                                 (j * cell_size, i * cell_size, cell_size, cell_size), 1)  # grid lines
 
         # Draw goal
         goal_r, goal_c = env.env.maze_view.goal
