@@ -3,6 +3,9 @@ import sys
 
 def play_human(env):
     pygame.init()
+   
+    pygame.display.set_mode((600, 600))
+    pygame.display.set_caption("Maze Human Mode")
     print("✅ Human mode started... (using env.render like QLearning/SARSA)")
 
     state = env.reset()
