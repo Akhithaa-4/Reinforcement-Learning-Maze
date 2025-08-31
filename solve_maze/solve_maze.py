@@ -12,6 +12,7 @@ from algorithms.model_free.q_learning_algorithm import QLearning
 from algorithms.model_free.monte_carlo_algorithm import MonteCarlo
 from algorithms.model_based.policy_iteration_algorithm import PolicyIteration
 from maze_mid.cust_maze import MazeEnvCast5x5, MazeEnvCast15x15, MazeEnvCast25x25
+from utils.human_mode import play_human
 
 # 🔹 import our new visualization
 from utils.policy_visualizer import visualize_policy
@@ -67,45 +68,6 @@ def SetAlgorithm(algorithm_configs, env):
     return algo, is_model_based
 
 
-def play_human(env):
-    import pygame
-    pygame.init()
-
-    r, c = env.env.maze_view.robot
-    running = True
-
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            elif event.type == pygame.KEYDOWN:
-                action = None
-                if event.key == pygame.K_UP:
-                    action = 0
-                elif event.key == pygame.K_DOWN:
-                    action = 1
-                elif event.key == pygame.K_LEFT:
-                    action = 2
-                elif event.key == pygame.K_RIGHT:
-                    action = 3
-                elif event.key == pygame.K_q:   # quit
-                    running = False
-
-                if action is not None:
-                    step_result = env.step(action)
-                    if len(step_result) == 5:
-                        state, reward, done, _, _ = step_result
-                    else:
-                        state, reward, done, _ = step_result
-
-                    if done:
-                        print("🎉 Goal reached!")
-                        running = False
-
-        # 👇 use the same rendering engine as SARSA/QL
-        env.render()
-
-    pygame.quit()
 
 
 
