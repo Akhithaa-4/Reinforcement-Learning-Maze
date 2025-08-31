@@ -1,20 +1,12 @@
-import pygame
-import sys
-
-# Map key presses to actions
-KEY_TO_ACTION = {
-    pygame.K_UP: 0,    # up
-    pygame.K_RIGHT: 1, # right
-    pygame.K_DOWN: 2,  # down
-    pygame.K_LEFT: 3   # left
-}
-
 def play_human(env):
     import pygame
     pygame.init()
 
     r, c = env.env.maze_view.robot
     running = True
+
+    # 👇 force maze to appear at start
+    env.render()
 
     while running:
         for event in pygame.event.get():
@@ -44,13 +36,7 @@ def play_human(env):
                         print("🎉 Goal reached!")
                         running = False
 
-        # 👇 use the same rendering engine as SARSA/QL
         env.render()
 
     pygame.quit()
-
-
-
-
-
     sys.exit()
